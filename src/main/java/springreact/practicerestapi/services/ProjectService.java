@@ -7,13 +7,13 @@ import springreact.practicerestapi.repositories.Projectrepo;
 
 @Service
 public class ProjectService {
-    private Projectrepo projectrepo;
+    private final Projectrepo projectrepo;
 
     public ProjectService(Projectrepo projectrepo) {
         this.projectrepo = projectrepo;
     }
 
-    public Project saveoutproject(Project project){
+    public Project saveourproject(Project project){
         return projectrepo.save(project);
     }
 

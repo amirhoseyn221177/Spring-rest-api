@@ -4,24 +4,39 @@ package springreact.practicerestapi.web;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.*;
 import springreact.practicerestapi.domain.Project;
+import springreact.practicerestapi.services.MapvalidationError;
 import springreact.practicerestapi.services.ProjectService;
+
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/project")
 public class ProjectController {
-    private ProjectService projectService;
+    private final ProjectService projectService;
+    private final MapvalidationError mapvalidationError;
 
-    public ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService, MapvalidationError mapvalidationError) {
         this.projectService = projectService;
+        this.mapvalidationError = mapvalidationError;
     }
 
     @PostMapping("")
-    public ResponseEntity<Project> createnewProject(@RequestBody Project project){
-        return  new ResponseEntity<Project>(project, HttpStatus.CREATED);
+    public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project , BindingResult result){
+        ResponseEntity<?> error= mapvalidationError.MapvalidationService(result);
+        if(error!=null){
+            return error;
+        }
+            Project project1= projectService.saveourproject(project);
+        return  new ResponseEntity<Project>(project1, HttpStatus.CREATED);
     }
+
+
+
 }

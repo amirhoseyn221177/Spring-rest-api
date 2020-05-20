@@ -1,7 +1,12 @@
 package springreact.practicerestapi.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sun.istack.NotNull;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import javax.xml.crypto.Data;
 import java.util.Date;
 
@@ -10,12 +15,21 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message="Name is required ")
     private String projectName;
+    @NotBlank(message = "indetifier is required")
+    @Size(min = 4,max=5,message ="Please use 4 to 5 charactares" )
+    @Column(updatable = false,unique = true)
     private String projectIdentifier;
+    @NotBlank(message = "not empty")
     private String description;
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date start_date;
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date end_date;
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date created_At;
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date updated_At;
 
     public Long getId() {
