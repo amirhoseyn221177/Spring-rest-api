@@ -7,4 +7,6 @@ import springreact.practicerestapi.domain.UserAccount;
 
 @Repository
 public interface UserRepo extends CrudRepository<UserAccount,Long> {
+    UserAccount findByUsername(String username);
+    UserAccount getById(Long id);
 }

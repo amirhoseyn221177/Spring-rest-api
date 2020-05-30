@@ -2,12 +2,18 @@ package springreact.practicerestapi.security;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.BeanIds;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import springreact.practicerestapi.services.CustomUserDetailService;
 
 @Configuration
 @EnableWebSecurity
@@ -15,9 +21,24 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtAuthenticationEntryPoint unauthHandler;
+    private final CustomUserDetailService customUserDetailService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public SecurityConfig(JwtAuthenticationEntryPoint unauthHandler) {
+    @Override
+    protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder.userDetailsService(customUserDetailService).passwordEncoder(bCryptPasswordEncoder);
+    }
+
+    @Override
+    @Bean(BeanIds.AUTHENTICATION_MANAGER)
+    protected AuthenticationManager authenticationManager() throws Exception {
+        return  super.authenticationManager();
+    }
+
+    public SecurityConfig(JwtAuthenticationEntryPoint unauthHandler, CustomUserDetailService customUserDetailService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.unauthHandler = unauthHandler;
+        this.customUserDetailService = customUserDetailService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
