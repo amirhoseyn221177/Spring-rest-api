@@ -33,6 +33,7 @@ public class BacklogController {
 
     @PostMapping("/{backlog_id}")
     public ResponseEntity<?> addPTtoBacklog(@Valid @RequestBody ProjectTask projectTask, BindingResult result , @PathVariable String backlog_id){
+        System.out.println(projectTask);
      ResponseEntity<?> error = mapvalidationError.MapvalidationService(result);
      if(error!=null){
          return  error;

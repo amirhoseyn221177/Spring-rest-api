@@ -25,4 +25,10 @@ public class CustomResponseEntity extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(projectIdException, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler
+    public final ResponseEntity<Object> handleBadEmail(DuplicateEmail ex, WebRequest request){
+        BadEmail badEmail=new BadEmail(ex.getMessage());
+        return  new ResponseEntity<>(badEmail,HttpStatus.BAD_REQUEST);
+    }
+
 }
