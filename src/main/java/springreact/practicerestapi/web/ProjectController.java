@@ -34,34 +34,33 @@ public class ProjectController {
 
     @PostMapping("")
     public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project , BindingResult result, Principal principal){
+
         System.out.println(project);
         ResponseEntity<?> error= mapvalidationError.MapvalidationService(result);
         if(error!=null){
             return error;
         }
 
-        Project project1= projectService.saveourproject(project);
+        Project project1= projectService.saveOurProject(project,principal.getName());
         return  new ResponseEntity<Project>(project1, HttpStatus.CREATED);
     }
 
     @GetMapping("/{projectId}")
-    public ResponseEntity<?> getProjectId(@PathVariable String projectId){
-        Project project=projectService.findProjectByIdentifier(projectId);
+    public ResponseEntity<?> getProjectId(@PathVariable String projectId , Principal principal){
+        Project project=projectService.findProjectByIdentifier(projectId, principal.getName());
         return  new ResponseEntity<>(project,HttpStatus.OK);
     }
 
     @GetMapping("/all")
-    public Iterable<Project> allProjects(){
-        return  projectService.findAllProjects();
+    public Iterable<Project> allProjects(Principal principal){
+        return  projectService.findAllProjects(principal.getName());
     }
 
 
     @DeleteMapping("/{projectId}")
-    public ResponseEntity<?> delteProjectById(@PathVariable String projectId){
-        projectService.deleteProjectByIdentifier(projectId);
-        Iterable<Project> projects=projectService.findAllProjects();
+    public ResponseEntity<?> deleteProjectById(@PathVariable String projectId,Principal principal){
+        projectService.deleteProjectByIdentifier(projectId,principal.getName());
         Map<String,Iterable<Project>> all = new HashMap<>();
-        all.put("Project with ID"+projectId+"has been deleted ",projects);
         return  new ResponseEntity<>(all, HttpStatus.OK);
     }
 

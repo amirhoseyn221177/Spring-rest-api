@@ -9,28 +9,24 @@ import springreact.practicerestapi.repositories.BacklogRepo;
 import springreact.practicerestapi.repositories.ProjectTaskRepo;
 import springreact.practicerestapi.repositories.Projectrepo;
 
-import java.util.List;
-
 @Service
 public class ProjectTaskService {
-    private BacklogRepo backlogRepo;
-    private ProjectTaskRepo projectTaskRepo;
-    private  Projectrepo projectrepo;
+    private final BacklogRepo backlogRepo;
+    private final ProjectTaskRepo projectTaskRepo;
+    private final Projectrepo projectrepo;
+    private final ProjectService projectService;
 
 
-    public ProjectTaskService(BacklogRepo backlogRepo, ProjectTaskRepo projectTaskRepo, Projectrepo projectrepo) {
+    public ProjectTaskService(BacklogRepo backlogRepo, ProjectTaskRepo projectTaskRepo, Projectrepo projectrepo, ProjectService projectService) {
         this.backlogRepo = backlogRepo;
         this.projectTaskRepo = projectTaskRepo;
         this.projectrepo = projectrepo;
+        this.projectService = projectService;
     }
 
 
-    public ProjectTask addProjectTask(String projectIdentifier, ProjectTask projectTask){
-
-
-        try{
-
-            Backlog backlog=backlogRepo.findByProjectIdentifier(projectIdentifier);
+    public ProjectTask addProjectTask(String projectIdentifier, ProjectTask projectTask, String username){
+            Backlog backlog =projectService.findProjectByIdentifier(projectIdentifier,username).getBacklog();
             projectTask.setBacklog(backlog);
             Integer backSeq= backlog.getPTSequence();
             backSeq++;
@@ -44,25 +40,17 @@ public class ProjectTaskService {
                 projectTask.setStatus("TO_DO");
             }
             return projectTaskRepo.save(projectTask);
-        }catch (Exception e){
-            throw new ProjectNotFoundException("Project not found ");
-        }
+
     }
 
-    public Iterable<ProjectTask> findByBackLogById(String backlog_id) {
-        Project project= projectrepo.findByProjectIdentifier(backlog_id);
-        if(project==null){
-            throw new ProjectNotFoundException("Project with ID :" +backlog_id+ " doesnt exist");
-        }
+    public Iterable<ProjectTask> findByBackLogById(String backlog_id,String username) {
+        projectService.findProjectByIdentifier(backlog_id,username);
         return projectTaskRepo.findByProjectIdentiferOrderByPriority(backlog_id);
     }
 
-    public ProjectTask findByprojectSequence(String backlog_id ,String seq){
+    public ProjectTask findByProjectSequence(String backlog_id ,String seq,String username){
         //Make sure we are searching on the right backlog
-        Backlog backlog= backlogRepo.findByProjectIdentifier(backlog_id);
-        if(backlog==null){
-            throw new ProjectNotFoundException("Project does not exist ");
-        }
+        projectService.findProjectByIdentifier(backlog_id,username);
         ProjectTask projectTask= projectTaskRepo.findByProjectSequence(seq);
         if(projectTask==null){
             throw new ProjectNotFoundException("This task does not exist");
@@ -74,15 +62,15 @@ public class ProjectTaskService {
         return projectTaskRepo.findByProjectSequence(seq);
     }
 
-    public ProjectTask updatingProjectTask(String backlog_id,ProjectTask updatedProject){
+    public ProjectTask updatingProjectTask(String backlog_id,ProjectTask updatedProject,String username){
         System.out.println(updatedProject.getProjectSequence());
-        ProjectTask projectTask= findByprojectSequence(backlog_id,updatedProject.getProjectSequence());
+        ProjectTask projectTask= findByProjectSequence(backlog_id,updatedProject.getProjectSequence(),username);
         projectTask=updatedProject;
         return projectTaskRepo.save(projectTask);
     }
 
-    public void deletingTask(String backlog_id, String pt_id){
-        ProjectTask projectTask= findByprojectSequence(backlog_id,pt_id);
+    public void deletingTask(String backlog_id, String pt_id,String username){
+        ProjectTask projectTask= findByProjectSequence(backlog_id,pt_id,username);
         if(projectTask==null){
             throw new ProjectNotFoundException("This task does not exist");
         }

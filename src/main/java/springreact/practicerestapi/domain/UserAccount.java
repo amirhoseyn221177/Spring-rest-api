@@ -28,6 +28,8 @@ public class UserAccount implements UserDetails {
     private String password;
     @Transient
     private String confirmPassword;
+    @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER,mappedBy = "userAccount",orphanRemoval = true)
+    private List<Project> projects= new ArrayList<>();
 
     public List<Project> getProjects() {
         return projects;
@@ -41,8 +43,7 @@ public class UserAccount implements UserDetails {
     private Date update_At;
 
     //OneToMany with Project
-    @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER,mappedBy = "userAccount",orphanRemoval = true)
-    private List<Project> projects= new ArrayList<>();
+
 
     public UserAccount() {
     }
