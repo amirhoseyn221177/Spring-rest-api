@@ -1,7 +1,6 @@
 package springreact.practicerestapi.security;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import springreact.practicerestapi.domain.UserAccount;
@@ -16,7 +15,7 @@ public class JwtTokenProvider {
     public String generateToken(Authentication authentication){
         UserAccount user= (UserAccount) authentication.getPrincipal();
         Date now= new Date(System.currentTimeMillis());
-        Date expiry= new Date(now.getTime()+30_000);
+        Date expiry= new Date(now.getTime()+30_0000);
         String userID=Long.toString(user.getId());
         Map<String,Object> claims= new HashMap<>();
         claims.put("id",(Long.toString(user.getId())));
@@ -29,5 +28,29 @@ public class JwtTokenProvider {
                 .setExpiration(expiry)
                 .signWith(SignatureAlgorithm.HS512,"SecretKeyToGenJWTs")
                 .compact();
+    }
+
+    public boolean validateToken(String token){
+        try{
+            Jwts.parser().setSigningKey("SecretKeyToGenJWTs").parseClaimsJws(token);
+            return true;
+        }catch (SignatureException e){
+            System.out.println("Invalid JWT Signature");
+        }catch (MalformedJwtException e){
+            System.out.println("Invalid JWT token");
+        }catch (ExpiredJwtException e){
+            System.out.println("Expired JWT token");
+        }catch (UnsupportedJwtException e){
+            System.out.println("Unsupported JWT token");
+        }catch (IllegalArgumentException e){
+            System.out.println("JWT claims string is empty");
+        }
+        return  false;
+    }
+
+    public Long getUSerIDFromJwt(String token){
+        Claims claims=Jwts.parser().setSigningKey("SecretKeyToGenJWTs").parseClaimsJws(token).getBody();
+        String id= (String) claims.get("id");
+        return  Long.parseLong(id);
     }
 }

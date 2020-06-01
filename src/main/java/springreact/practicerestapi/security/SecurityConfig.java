@@ -1,7 +1,6 @@
 package springreact.practicerestapi.security;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,7 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import springreact.practicerestapi.services.CustomUserDetailService;
+
 
 @Configuration
 @EnableWebSecurity
@@ -23,6 +24,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtAuthenticationEntryPoint unauthHandler;
     private final CustomUserDetailService customUserDetailService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -34,11 +37,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected AuthenticationManager authenticationManager() throws Exception {
         return  super.authenticationManager();
     }
-
-    public SecurityConfig(JwtAuthenticationEntryPoint unauthHandler, CustomUserDetailService customUserDetailService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+//    @Bean
+//    public  JwtAuthenticationFilter jwtAuthenticationFilter(){
+//        return  new JwtAuthenticationFilter();
+//    }
+    public SecurityConfig(JwtAuthenticationEntryPoint unauthHandler, CustomUserDetailService customUserDetailService, BCryptPasswordEncoder bCryptPasswordEncoder, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.unauthHandler = unauthHandler;
         this.customUserDetailService = customUserDetailService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Override
@@ -64,5 +71,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 ).permitAll()
                 .antMatchers("/api/users/**").permitAll()
                 .anyRequest().authenticated();
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

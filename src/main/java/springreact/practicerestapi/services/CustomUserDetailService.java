@@ -11,7 +11,7 @@ import springreact.practicerestapi.repositories.UserRepo;
 
 @Service
 public class CustomUserDetailService implements UserDetailsService {
-    private UserRepo userRepo;
+    private final UserRepo userRepo;
 
     public CustomUserDetailService(UserRepo userRepo) {
         this.userRepo = userRepo;

@@ -49,7 +49,7 @@ public class userController {
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt="Bearer"+jwtTokenProvider.generateToken(authentication);
+        String jwt="Bearer "+jwtTokenProvider.generateToken(authentication);
         return ResponseEntity.ok(new JWTLogin(true,jwt));
     }
     @PostMapping("/register")

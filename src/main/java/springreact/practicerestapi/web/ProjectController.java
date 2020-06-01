@@ -13,6 +13,7 @@ import springreact.practicerestapi.services.MapvalidationError;
 import springreact.practicerestapi.services.ProjectService;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +33,7 @@ public class ProjectController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project , BindingResult result){
+    public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project , BindingResult result, Principal principal){
         System.out.println(project);
         ResponseEntity<?> error= mapvalidationError.MapvalidationService(result);
         if(error!=null){
