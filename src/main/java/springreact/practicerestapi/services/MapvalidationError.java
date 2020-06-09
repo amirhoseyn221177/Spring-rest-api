@@ -11,8 +11,6 @@ import java.util.Map;
 
 @Service
 public class MapvalidationError {
-
-
     public ResponseEntity<?> MapvalidationService(BindingResult result){
         if(result.hasErrors()){
             Map<String,String> errormap=new HashMap<>();

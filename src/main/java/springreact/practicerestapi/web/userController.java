@@ -23,6 +23,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "http://localhost:3000")
 public class userController {
 
     private final MapvalidationError mapvalidationError;
@@ -41,6 +42,8 @@ public class userController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest , BindingResult result){
+        System.out.println(loginRequest);
+        System.out.println(47);
         ResponseEntity<?> error=mapvalidationError.MapvalidationService(result);
         if(error!=null) return error;
         Authentication authentication= authenticationManager.authenticate(
@@ -55,6 +58,7 @@ public class userController {
     @PostMapping("/register")
     public ResponseEntity<?> addingUser(@Valid @RequestBody UserAccount user, BindingResult result){
         userValidator.validate(user,result);
+        System.out.println(user.getUsername());
         ResponseEntity<?> error=mapvalidationError.MapvalidationService(result);
         if(error!=null){
             return error;

@@ -64,6 +64,8 @@ public class ProjectService {
     }
 
     public Iterable<Project> findAllProjects(String username){
+        System.out.println(username);
+        System.out.println(68);
         return  projectrepo.findAllByProjectLeader(username);
     }
 

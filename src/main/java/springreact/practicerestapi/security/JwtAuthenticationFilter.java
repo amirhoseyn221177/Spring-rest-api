@@ -20,9 +20,9 @@ import java.util.Collections;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private  JwtTokenProvider tokenProvider;
+    private final JwtTokenProvider tokenProvider;
 
-    private  CustomUserDetailService customUserDetailService;
+    private final CustomUserDetailService customUserDetailService;
 
     public JwtAuthenticationFilter(JwtTokenProvider tokenProvider, CustomUserDetailService customUserDetailService) {
         this.tokenProvider = tokenProvider;

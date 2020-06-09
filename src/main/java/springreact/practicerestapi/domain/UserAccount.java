@@ -28,21 +28,12 @@ public class UserAccount implements UserDetails {
     private String password;
     @Transient
     private String confirmPassword;
-    @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER,mappedBy = "userAccount",orphanRemoval = true)
-    private List<Project> projects= new ArrayList<>();
-
-    public List<Project> getProjects() {
-        return projects;
-    }
-
-    public void setProjects(List<Project> projects) {
-        this.projects = projects;
-    }
-
-    private Date create_At;
-    private Date update_At;
 
     //OneToMany with Project
+    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "userAccount", orphanRemoval = true)
+    private List<Project> projects= new ArrayList<>();
+    private Date create_At;
+    private Date update_At;
 
 
     public UserAccount() {
@@ -50,6 +41,12 @@ public class UserAccount implements UserDetails {
 
     public Long getId() {
         return id;
+    }
+    public List<Project> getProjects() {
+        return projects;
+    }
+    public void setProjects(List<Project> projects){
+        this.projects = projects;
     }
 
     public void setId(Long id) {
