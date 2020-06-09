@@ -21,7 +21,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/project")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin
 public class ProjectController {
     private final ProjectService projectService;
     private final MapvalidationError mapvalidationError;
